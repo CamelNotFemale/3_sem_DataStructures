@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
@@ -110,7 +111,7 @@ void print(NODE *HEAD)
 {
     NODE *p=HEAD;
     cout << "{ ";
-    if (!(HEAD->next)) cout << "List is empty" << endl;
+    if (!(HEAD->next)) cout << " ";
     else {
         do {
             p = p->next;
@@ -119,9 +120,20 @@ void print(NODE *HEAD)
     }
     cout << "}" << endl;
 }
-void clean(NODE *node)
+void clean(NODE *head)
 {
-
+    NODE *p=head->next,
+         *buff=nullptr;
+    if (p)
+    {
+        while (p)
+        {
+            buff = p;
+            p = p->next;
+            buff->next = nullptr;
+            delete buff;
+        }
+    }
 }
 // Функции для работы с массивом boolean'ов
 void strToUniverse(char A[], bool U[])
@@ -202,6 +214,16 @@ int Menu(int i)
     while ((c=getchar())!='\n');
     return Q;
 }
+char *initArr(string S, int *n) {
+  int i, j;
+  char *ans; *n = S.length();
+  ans = new char[*n];
+  for (i = 0, j = 0; i < *n; ++i) {
+    ans[j] = S[i];
+    j++;
+  }
+  return ans;
+}
 void generateData(char A[])
 {
     int gen, i, k=0;
@@ -212,8 +234,6 @@ void generateData(char A[])
     }
 
     A[k]='\0';
-    print(A);
-    system("pause");
 }
 int main()
 {
@@ -226,8 +246,10 @@ int main()
     char D[N+1]={'b','d'};
     char E[N+1]={};
     bool U[N] = {};
-    int rolls = 1000000;
-    clock_t ticks;
+    int r, rolls = 1000000;
+    clock_t ticks, start;
+    char ans[N+1] = {};
+    int i;
 
     do
     {
@@ -248,10 +270,19 @@ int main()
                     Q11=0;
                     break;
                 case 2:
+                    cout << "Gegenerated A: ";
                     generateData(A);
+                    print(A);
+                    cout << "Gegenerated B: ";
                     generateData(B);
+                    print(B);
+                    cout << "Gegenerated C: ";
                     generateData(C);
+                    print(C);
+                    cout << "Gegenerated D: ";
                     generateData(D);
+                    print(D);
+                    system("pause");
                     Q11=0;
                 case 0:
                     break;
@@ -267,14 +298,29 @@ int main()
                 switch (Q12)
                 {
                 case 1:
-                    process(A, B, E); // Преобразования статичными массивами
-                    process(E, C, E);
-                    process(E, D, E);
+                    start = clock();
+                    for (r=rolls;r>0;r--)
+                    {
+                        for (i=0; i<N; i++) ans[i]=E[i];
+                        process(A, B, ans); // Преобразования статичными массивами
+                        process(ans, C, ans);
+                        process(ans, D, ans);
+                    }
+                    ticks = clock() - start;
                     cout << "Result using a static array:" << endl;
-                    cout << "E = "; print(E);
+                    cout << "E = "; print(ans);
+                    cout << "Time: " << 1000 * ((((double) ticks) / CLOCKS_PER_SEC) / rolls) << " ms" << endl;
                     Q12=0;
                     break;
-                case 2: // !!!! ДОБАВИТЬ ОЧИСТКУ ПАМЯТИ !!!! //
+                case 2:
+                    if (HEAD_A)
+                    {
+                        clean(HEAD_A);
+                        clean(HEAD_B);
+                        clean(HEAD_C);
+                        clean(HEAD_D);
+                        clean(HEAD_E);
+                    }
                     HEAD_A = make_head();
                     strToList(HEAD_A, A); // Преобразование строки в список
                     HEAD_B = make_head();
@@ -283,20 +329,32 @@ int main()
                     strToList(HEAD_C, C);
                     HEAD_D = make_head();
                     strToList(HEAD_D, D);
-                    HEAD_E = process(HEAD_A, HEAD_B); // Преобразования списком
-                    HEAD_E = process(HEAD_E, HEAD_C);
-                    HEAD_E = process(HEAD_E, HEAD_D);
+                    start = clock();
+                    for (r=rolls; r>0; r--)
+                    {
+                        HEAD_E = process(HEAD_A, HEAD_B); // Преобразования списком
+                        HEAD_E = process(HEAD_E, HEAD_C);
+                        HEAD_E = process(HEAD_E, HEAD_D);
+                    }
+                    ticks = clock()-start;
                     cout << "Result using a List:" << endl;
                     cout << "E = "; print(HEAD_E); // Вывод в виде списка
+                    cout << "Time: " << 1000 * ((((double) ticks) / CLOCKS_PER_SEC) / rolls) << " ms" << endl;
                     Q12=0;
                     break;
                 case 3:
                     strToUniverse(A, U); // Преобразование строки в универсум
-                    process(U, B); // Преобразования при помозщи универсума
-                    process(U, C);
-                    process(U, D);
+                    start = clock();
+                    for (r=rolls; r>0; r--)
+                    {
+                        process(U, B); // Преобразования при помозщи универсума
+                        process(U, C);
+                        process(U, D);
+                    }
+                    ticks = clock() - start;
                     cout << "Result using a Universum:" << endl;
                     cout << "E = "; print(U); // Вывод по составленному универсуму
+                    cout << "Time: " << 1000 * ((((double) ticks) / CLOCKS_PER_SEC) / rolls) << " ms" << endl;
                     Q12=0;
                     break;
                 case 4:
@@ -304,9 +362,13 @@ int main()
                     strToWord(&wB, B);
                     strToWord(&wC, C);
                     strToWord(&wD, D);
-                    wE = ((wA & ~wB) & ~wC) & ~wD; // Преобразование машинным слово
+                    start = clock();
+                    for (r=rolls; r>0; r--)
+                        wE = ((wA & ~wB) & ~wC) & ~wD; // Преобразование машинным слово
+                    ticks = clock() - start;
                     cout << "Result using a Machine word:" << endl;
                     cout << "E = "; print(wE); // Вывод по машинному слову
+                    cout << "Time: " << 1000 * ((((double) ticks) / CLOCKS_PER_SEC) / rolls) << " ms" << endl;
                     Q12=0;
                     break;
                 case 0:
