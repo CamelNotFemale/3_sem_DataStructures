@@ -144,6 +144,7 @@ void strToUniverse(char A[], bool U[])
         i++;
     }
 }
+
 void process(bool U[], char A[])
 {
     int i=0;
