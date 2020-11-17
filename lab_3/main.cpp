@@ -26,10 +26,10 @@ class Tree {
     void clrscr(); // очистка рабочей памяти
     Node* MakeNode(int depth); // создание поддерева
     void OutNodes(Node* v, int r, int c); // выдача поддерева
-    Tree(const Tree&); // фиктивный конструктор копии
-    Tree(Tree&&); // копия с переносом(с++11)
-    Tree operator = (const Tree&) const = delete; // присваивание
-    Tree operator = (Tree&&) const = delete; // присваивание с переносом
+    //Tree(const Tree&); // фиктивный конструктор копии
+    //Tree(Tree&&); // копия с переносом(с++11)
+    //Tree operator = (const Tree&) const = delete; // присваивание
+    //Tree operator = (Tree&&) const = delete; // присваивание с переносом
     void traversal(Node *, int &rgt_leaves); // Продолжение симметричного обхода
     // Перегрузкой traversal была решена проблема того, что члены класса не могут использоваться в качестве аргументов по умолчанию
     // иначе была бы одна функций void traversal(Node *node=root);
@@ -38,7 +38,7 @@ public:
     ~Tree();
     void MakeTree() {root = MakeNode(0);} // ввод - генерация дерева
     bool exist() {return root != nullptr;} // проверка на пустоту дерева
-    void traversal(int &rgt_leaves); // Начало симметричного обхода
+    int traversal(); // Начало симметричного обхода
     void OutTree(); // выдача на экран
 };
 Tree:: Tree(char nm, char mnm, int mxr): // Конструктор, создающий матрицу символов, необх. для выдачи изображения на экран
@@ -84,8 +84,9 @@ void Tree::OutNodes(Node *v, int r, int c)
         if (v->rgt) OutNodes(v->rgt, r+1, c+(offset >> r));
     }
 }
-void Tree::traversal(int &rgt_leaves)
+int Tree::traversal()
 {
+    int rgt_leaves=0;
     Node *node = root;
     if (node)
     {
@@ -97,6 +98,7 @@ void Tree::traversal(int &rgt_leaves)
             rgt_leaves++;
         }
     }
+    return rgt_leaves;
 }
 void Tree::traversal(Node *node, int &rgt_leaves)
 {
@@ -112,16 +114,17 @@ void Tree::traversal(Node *node, int &rgt_leaves)
 int main()
 {
     Tree root('A', 'Z', 8);
+    int rgt_leaves;
     srand(time(NULL));
     setlocale(LC_ALL, "Russian");
-    int rgt_leaves=0;
+
     root.MakeTree();
     if (root.exist())
     {
         root.OutTree();
         cout << '\n' << "Внутренний(симметричный) обход: ";
-        root.traversal(rgt_leaves);
-        cout << "\nДерево содержит " << rgt_leaves << " правых листьев\n";
+        rgt_leaves = root.traversal();
+        cout << "\nДерево содержит " << rgt_leaves << " правых листа(-ев)\n";
     }
     else cout << "Дерево пусто!";
     return 0;
