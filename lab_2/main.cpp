@@ -2,7 +2,6 @@
 #include <clocale>
 #include <cstdlib>
 #include <ctime>
-#include <cstring>
 using namespace std;
 const int NMAX=26;
 #include "Set.h" //Реализация структур данных
@@ -16,7 +15,7 @@ int main()
     char Q;
     char A_0[NMAX+1], B_0[NMAX+1], C_0[NMAX+1], D_0[NMAX+1];
 
-    cout << "Randomly generated sets:";
+    cout << "Randomly generated sets:" << endl;
     Set A('A'), B('B'), C('C'), D('D'), E;
     cout << endl << "Do you want to enter your sets? Enter 1 - Yes, 0 - Use randomly generated" << endl;
     cin >> Q;
@@ -34,7 +33,7 @@ int main()
 
     cout << "\nResult:\n";
     E.Show('E');
-    cout << "Middle power = " << (A.power()+B.power()+C.power()+D.power()+E.power())/5 << " Time: " << 1000 * ((((double) ticks) / CLOCKS_PER_SEC) / rolls) << " ms" << endl;
+    cout << " Middle power = " << (A.power()+B.power()+C.power()+D.power()+E.power())/5 << " Time: " << 1000 * ((((double) ticks) / CLOCKS_PER_SEC) / rolls) << " ms" << endl;
 
     return 0;
 }

@@ -1,8 +1,9 @@
 #ifndef SET_H_INCLUDED
 #define SET_H_INCLUDED
 #include <cstring>
-//****************************************Array***********************************
 
+//****************************************Array***********************************
+/*
 class Set {
 private: // «акрыта€ часть класса Ч данные
     static int N, cnt; // мощность универсума
@@ -130,6 +131,7 @@ void Set::Show(char c)
 {
     cout << '\n' << c << " = [" << A << "] " << "|" << power() << "|" << endl;
 }
+*/
 //****************************************Array***********************************
 
 
@@ -158,6 +160,7 @@ public:
     int power();
     void rewrite(char str[]); //ѕерезаписать множество
     void Show();
+    void Show(char);
 };
 
 // конструтор со случайным заполнением
@@ -239,6 +242,20 @@ void Set::Show()
     std::cout << name << " = {" << result << "}, |" << name << "| = " << this->power() << std::endl;
     delete [] result;
 }
+
+void Set::Show(char c)
+{
+    char* result = new char[N+1];
+    int i,j;
+
+    for(i = 0, j = 0; i < N; ++i)
+        if(1 << i & S)
+            result[j++] = i + 'a';
+    result[j] = '\0';
+
+    std::cout << c << " = {" << result << "}, |" << name << "| = " << this->power() << std::endl;
+    delete [] result;
+}
 */
 //*********************************************Machine Word************************
 
@@ -270,6 +287,7 @@ public:
     void rewrite(char str[]); //ѕерезаписать множество
 
     void Show();
+    void Show(char c);
 };
 
 Set::Set(): name('A' + cnt++), S(new bool[N]) // конструтор пустого множества
@@ -370,12 +388,28 @@ void Set::Show()
 
     delete [] result;
 }
+
+void Set::Show(char c)
+{
+    char* result = new char[N+1];
+    int i,j;
+
+    for(i = 0, j = 0; i < N; ++i)
+        if(S[i])
+            result[j++] = i + 'a';
+
+    result[j] = '\0';
+
+    std::cout << c << " = {" << result << "}, |" << name << "| = " << this->power() << std::endl;
+
+    delete [] result;
+}
 */
 //****************************************Boolean*********************************
 
 
 //*************************************List***************************************
-/*
+
 class El{ //Ёлемент множества(узел)
     char e;
     El *next;
@@ -423,6 +457,7 @@ public:
 
     //»нтерфейс
     void Show();
+    void Show(char);
     int power() { return n; }
     void rewrite(char str[]); //ѕерезаписать множество
 };
@@ -542,11 +577,18 @@ void Set::rewrite(char str[])
 
 void Set::Show()
 {
-    std::cout<<'\n'<< 'E' << "(" << n << ") = [ ";
+    std::cout<<'\n'<< S << "(" << n << ") = [ ";
     for(El * p = A; p; p = p->next) std:: cout << p->e << " ";
     std::cout << "]";
 }
-*/
+
+void Set::Show(char c)
+{
+    std::cout<<'\n'<< c << "(" << n << ") = [ ";
+    for(El * p = A; p; p = p->next) std:: cout << p->e << " ";
+    std::cout << "]";
+}
+
 //*************************************List***************************************
 
 #endif // SET_H_INCLUDED
