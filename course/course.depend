@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1608987006 source:c:\users\дима\documents\3_sem_datastructures\course\tree.cpp
+	"tree.h"
+
+1608986752 c:\users\дима\documents\3_sem_datastructures\course\tree.h
+	<vector>
+	<string>
+	<algorithm>
+	<iostream>
+

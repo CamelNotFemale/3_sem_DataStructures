@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1605721164 source:c:\users\дима\documents\3_sem_datastructures\lab_3\main.cpp
+	<iostream>
+	<cstring>
+	<time.h>
+

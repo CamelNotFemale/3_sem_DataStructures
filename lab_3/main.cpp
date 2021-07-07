@@ -30,7 +30,7 @@ class Tree {
     //Tree(Tree&&); // копия с переносом(с++11)
     //Tree operator = (const Tree&) const = delete; // присваивание
     //Tree operator = (Tree&&) const = delete; // присваивание с переносом
-    void traversal(Node *, int &rgt_leaves); // Продолжение симметричного обхода
+    void traversal(Node *, int &, bool); // Продолжение симметричного обхода
     // Перегрузкой traversal была решена проблема того, что члены класса не могут использоваться в качестве аргументов по умолчанию
     // иначе была бы одна функций void traversal(Node *node=root);
 public:
@@ -79,9 +79,9 @@ void Tree::OutNodes(Node *v, int r, int c)
 {
     if (r&&c&&(c<80)) SCREEN[r-1][c-1] = v->d; //вывод метки
     if (r<maxrow) {
-        if (v->lft) OutNodes(v->lft, r+1, c-(offset >> r));
+        if (v->lft) OutNodes(v->lft, r+1, c-(offset >> r)+1);
         if (v->mdl) OutNodes(v->mdl, r+1, c);
-        if (v->rgt) OutNodes(v->rgt, r+1, c+(offset >> r));
+        if (v->rgt) OutNodes(v->rgt, r+1, c+(offset >> r)-1);
     }
 }
 int Tree::traversal()
@@ -90,25 +90,23 @@ int Tree::traversal()
     Node *node = root;
     if (node)
     {
-        if (node->lft) traversal(node->lft,rgt_leaves);
-        if (node->mdl) traversal(node->mdl,rgt_leaves);
+        if (node->lft) traversal(node->lft,rgt_leaves, 0);
+        if (node->mdl) traversal(node->mdl,rgt_leaves, 0);
         cout << node->d << '_';
-        if (node->rgt) {
-            traversal(node->rgt,rgt_leaves);
-            rgt_leaves++;
-        }
+        if (node->rgt) traversal(node->rgt,rgt_leaves, 1);
     }
     return rgt_leaves;
 }
-void Tree::traversal(Node *node, int &rgt_leaves)
+void Tree::traversal(Node *node, int &rgt_leaves, bool there_is_rgt)
 {
-    if (node->lft) traversal(node->lft,rgt_leaves);
-    if (node->mdl) traversal(node->mdl,rgt_leaves);
-    cout << node->d << '_';
-    if (node->rgt) {
-            traversal(node->rgt,rgt_leaves);
-            rgt_leaves++;
-        }
+    if (there_is_rgt && !(node->lft) && !(node->mdl) && !(node->rgt))
+        {rgt_leaves++;cout << '[' << node->d << "]_";}
+    else {
+        if (node->lft) traversal(node->lft,rgt_leaves, 0);
+        if (node->mdl) traversal(node->mdl,rgt_leaves, 0);
+        cout << node->d << '_';
+        if (node->rgt) traversal(node->rgt,rgt_leaves, 1);
+    }
 }
 
 int main()
@@ -124,7 +122,7 @@ int main()
         root.OutTree();
         cout << '\n' << "Внутренний(симметричный) обход: ";
         rgt_leaves = root.traversal();
-        cout << "\nДерево содержит " << rgt_leaves << " правых листа(-ев)\n";
+        cout << "\n\nДерево содержит " << rgt_leaves << " правых листа(-ев). \nКаждый из них выделен квадратными скобками[]\n";
     }
     else cout << "Дерево пусто!";
     return 0;
